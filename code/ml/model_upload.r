@@ -14,10 +14,10 @@ timestamp <- format(current_time, "%Y%m%d_%H%M%S")
 
 # Create the filename using the formatted timestamp
 
-object_name <- paste0("model_", timestamp, ".bst")
+object_name <- paste0("models/model_", timestamp, ".bst")
 print('Uploading model to: ')
 print(object_name)
 
-put_object(file = "model.bst", object = object_name, base_url = s3_endpoint_url, bucket = s3_bucket, region = "", key = s3_access_key, secret = s3_secret_key)
+put_object(file = "model.bst", object = object_name, base_url = s3_endpoint_url, use_https = FALSE, bucket = s3_bucket, region = "", key = s3_access_key, secret = s3_secret_key)
 
 print('Model upload complete')
