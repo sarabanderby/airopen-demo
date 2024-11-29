@@ -9,64 +9,6 @@
       "id": "primary",
       "nodes": [
         {
-          "id": "69020a5e-d731-4415-932b-8bb9944c0ce5",
-          "type": "execution_node",
-          "op": "execute-r-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [
-                "raw_data.csv"
-              ],
-              "env_vars": [],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_shared_mem_size": {},
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "data_ingestion.r"
-            },
-            "label": "",
-            "ui_data": {
-              "label": "data_ingestion.r",
-              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
-              "x_pos": 131,
-              "y_pos": 258,
-              "description": "Run R script"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              }
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
           "id": "bc0ce0de-2a90-4dd5-ac0d-6fe689ee2756",
           "type": "execution_node",
           "op": "execute-r-node",
@@ -89,7 +31,7 @@
             "label": "",
             "ui_data": {
               "label": "datacleaning.r",
-              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "image": "/notebook/airopen-demo/jupyterlab/static/elyra/r-logo.svg",
               "x_pos": 367,
               "y_pos": 257,
               "description": "Run R script"
@@ -109,8 +51,8 @@
               },
               "links": [
                 {
-                  "id": "a92b4b0f-7fba-431e-ac01-870bac9f0735",
-                  "node_id_ref": "69020a5e-d731-4415-932b-8bb9944c0ce5",
+                  "id": "84bab255-2e11-47da-930e-3bcd230c19ae",
+                  "node_id_ref": "83a0fe84-a83e-420d-9e6a-1454f9e206ec",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -155,7 +97,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.r",
-              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "image": "/notebook/airopen-demo/jupyterlab/static/elyra/r-logo.svg",
               "x_pos": 584,
               "y_pos": 256,
               "description": "Run R script"
@@ -225,7 +167,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.r",
-              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "image": "/notebook/airopen-demo/jupyterlab/static/elyra/r-logo.svg",
               "x_pos": 802,
               "y_pos": 257,
               "description": "Run R script"
@@ -288,7 +230,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.r",
-              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "image": "/notebook/airopen-demo/jupyterlab/static/elyra/r-logo.svg",
               "x_pos": 1026,
               "y_pos": 256,
               "description": "Run R script"
@@ -329,6 +271,64 @@
               }
             }
           ]
+        },
+        {
+          "id": "83a0fe84-a83e-420d-9e6a-1454f9e206ec",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "raw_data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "data_ingestion.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "data_ingestion.py",
+              "image": "/notebook/airopen-demo/jupyterlab/static/elyra/python.svg",
+              "x_pos": 128,
+              "y_pos": 260,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
         }
       ],
       "app_data": {
@@ -342,29 +342,29 @@
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
-            "mounted_volumes": [],
             "kubernetes_shared_mem_size": {},
+            "kubernetes_tolerations": [],
+            "mounted_volumes": [],
+            "kubernetes_pod_annotations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
-                "env_var": "AWS_ACCESS_KEY_ID",
+                "env_var": "S3_ACCESS_KEY_ID",
                 "name": "aws-connection-breastcancer-bucket",
                 "key": "AWS_ACCESS_KEY_ID"
               },
               {
-                "env_var": "AWS_SECRET_ACCESS_KEY",
+                "env_var": "S3_SECRET_ACCESS_KEY",
                 "name": "aws-connection-breastcancer-bucket",
                 "key": "AWS_SECRET_ACCESS_KEY"
               },
               {
-                "env_var": "AWS_S3_ENDPOINT",
+                "env_var": "S3_ENDPOINT",
                 "name": "aws-connection-breastcancer-bucket",
                 "key": "AWS_S3_ENDPOINT"
               },
               {
-                "env_var": "AWS_S3_BUCKET",
+                "env_var": "S3_BUCKET",
                 "name": "aws-connection-breastcancer-bucket",
                 "key": "AWS_S3_BUCKET"
               }
