@@ -57,3 +57,34 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: ''
+    opendatahub.io/notebook-image-name: RStudio
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:rstudio-rhel9-rhoai-2.16'
+    opendatahub.io/recommended-accelerators: '[]'
+  name: rstudio
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: rstudio-rhel9-rhoai-2.16
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[]'
+        opendatahub.io/notebook-software: '[]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:rstudio-rhel9-rhoai-2.16'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:rstudio-rhel9-rhoai-2.16'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
