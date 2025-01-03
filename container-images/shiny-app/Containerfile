@@ -1,2 +1,2 @@
-FROM image-registry.openshift-image-registry.svc:5000/shiny-build/shiny-base-image:latest
+FROM quay.io/mmurakam/r-shiny:0.1.0
 COPY src/ /application

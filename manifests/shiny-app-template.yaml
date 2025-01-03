@@ -7,124 +7,124 @@ metadata:
     description: "Deploys an R Shiny App on OpenShift"
     iconClass: icon-openshift
 objects:
-- apiVersion: image.openshift.io/v1
-  kind: ImageStream
-  metadata:
-    annotations:
-      description: Keeps track of changes in the shiny app
-    labels:
-      app: "${APP_LABEL}"
-    name: "${APP_NAME}"
-- apiVersion: build.openshift.io/v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-      description: Build config for shiny application
-    labels:
-      app: "${APP_LABEL}"
-    name: "${APP_NAME}"
-  spec:
-    output:
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        description: Keeps track of changes in the shiny app
+      labels:
+        app: '${APP_LABEL}'
+      name: '${APP_NAME}'
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+        description: Build config for shiny application
+      labels:
+        app: '${APP_LABEL}'
+      name: '${APP_NAME}'
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${APP_NAME}:latest'
+      source:
+        git:
+          uri: '${APP_GIT_URI}'
+          ref: '${APP_GIT_BRANCH}'
+        type: Git
+        contextDir: '${REPO_CONTAINERFILE_PATH}'
+      strategy:
+        dockerStrategy:
+          dockerfilePath: Containerfile
+      triggers:
+        - type: ImageChange
+        - type: ConfigChange
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        description: '${APP_NAME} Shiny Server Deployment'
+        image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"${APP_NAME}:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"${APP_NAME}\")].image"}]'
+      labels:
+        app: '${APP_LABEL}'
+      name: '${APP_NAME}'
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: '${APP_LABEL}'
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 25%
+          maxSurge: 25%
+      template:
+        metadata:
+          labels:
+            app: '${APP_LABEL}'
+          name: '${APP_NAME}'
+        spec:
+          containers:
+            - image: '${APP_NAME}:latest'
+              livenessProbe:
+                httpGet:
+                  path: /
+                  port: 3838
+                initialDelaySeconds: 5
+                timeoutSeconds: 5
+              name: '${APP_NAME}'
+              ports:
+                - containerPort: 3838
+              readinessProbe:
+                httpGet:
+                  path: /
+                  port: 3838
+                initialDelaySeconds: 5
+                timeoutSeconds: 5
+              env:
+                - name: MODEL_INFERENCE_URL
+                  value: '${MODEL_INFERENCE_URL}'
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: '${APP_LABEL}'
+      name: '${APP_NAME}'
+    spec:
+      ports:
+        - name: '${APP_NAME}-service'
+          port: 80
+          protocol: TCP
+          targetPort: 3838
+      selector:
+        app: '${APP_LABEL}'
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app: '${APP_LABEL}'
+      name: '${APP_NAME}'
+    spec:
+      path: /
       to:
-        kind: ImageStreamTag
-        name: "${APP_NAME}:latest"
-    source:
-      git:
-        uri: "${APP_GIT_URI}"
-        ref: "${APP_GIT_BRANCH}"
-      type: Git
-    strategy:
-      dockerStrategy:
-        dockerfilePath: "${REPO_DOCKERFILE_PATH}"
-    triggers:
-    - type: "ImageChange"
-    - type: "ConfigChange"
-- apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    annotations:
-      description: "${APP_NAME} Shiny Server Deployment"
-      image.openshift.io/triggers: >-
-        [{"from":{"kind":"ImageStreamTag","name":"${APP_NAME}:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"${APP_NAME}\")].image"}]
-    labels:
-      app: "${APP_LABEL}"
-    name: "${APP_NAME}"
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        app: "${APP_LABEL}"
-    strategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxUnavailable: 25%
-        maxSurge: 25%
-    template:
-      metadata:
-        labels:
-          app: "${APP_LABEL}"
-        name: "${APP_NAME}"
-      spec:
-        containers:
-        - image: "${APP_NAME}:latest"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3838
-            initialDelaySeconds: 5
-            timeoutSeconds: 5
-          name: "${APP_NAME}"
-          ports:
-          - containerPort: 3838
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3838
-            initialDelaySeconds: 5
-            timeoutSeconds: 5
-          env:
-          - name: MODEL_INFERENCE_URL
-            value: "${MODEL_INFERENCE_URL}"
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      app: "${APP_LABEL}"
-    name: "${APP_NAME}"
-  spec:
-    ports:
-    - name: "${APP_NAME}-service"
-      port: 80
-      protocol: TCP
-      targetPort: 3838
-    selector:
-      app: "${APP_LABEL}"
-- apiVersion: route.openshift.io/v1
-  kind: Route
-  metadata:
-    labels:
-      app: "${APP_LABEL}"
-    name: "${APP_NAME}"
-  spec:
-    path: /
-    to:
-      kind: Service
-      name: "${APP_NAME}"
+        kind: Service
+        name: '${APP_NAME}'
 parameters:
-- name: APP_NAME
-  description: Name used for the app
-  value: shiny-app
-- name: APP_LABEL
-  description: Label used for the app
-  value: shiny
-- name: APP_GIT_URI
-  description: Deployment git uri
-  value: https://github.com/mamurak/airopen-demo.git
-- name: APP_GIT_BRANCH
-  description: Deployment git branch
-  value: main
-- name: REPO_DOCKERFILE_PATH
-  description: Deployment git branch
-  value: "container-images/shiny-app/Containerfile"
-- name: MODEL_INFERENCE_URL
-  description: Inference URL of deployed model
+  - name: APP_NAME
+    description: Name used for the app
+    value: shiny-app
+  - name: APP_LABEL
+    description: Label used for the app
+    value: shiny
+  - name: APP_GIT_URI
+    description: Deployment git uri
+    value: 'https://github.com/mamurak/airopen-demo.git'
+  - name: APP_GIT_BRANCH
+    description: Deployment git branch
+    value: main
+  - name: REPO_CONTAINERFILE_PATH
+    description: Path to Containerfile
+    value: container-images/shiny-app
+  - name: MODEL_INFERENCE_URL
+    description: Inference URL of deployed model
