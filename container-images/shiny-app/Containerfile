@@ -1,0 +1,2 @@
+FROM image-registry.openshift-image-registry.svc:5000/shiny-build/shiny-base-image:latest
+COPY ./src/app.R /application

@@ -1,0 +1,17 @@
+FROM quay.io/sara_banderby/rhel9-r4:shiny
+
+LABEL description="R-Shiny image based on RHEL UBI9"
+LABEL version="1.0"
+
+USER root
+
+RUN dnf -y install glibc-langpack-en
+ENV LANG en_US.UTF-8
+
+RUN R -q -e 'install.packages(c("dplyr", "rpart","utf8", "generics", "bslib", "tibble", "xgboost", "httr", "jsonlite"), repos = "https://cran.rstudio.com/")'
+
+RUN mkdir /application
+WORKDIR /application
+
+USER 1001
+ENTRYPOINT R -s -e 'library("shiny"); runApp(host = "0.0.0.0", port = 3838)'

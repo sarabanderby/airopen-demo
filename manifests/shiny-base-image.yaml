@@ -1,0 +1,30 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    description: ImageStream for Shiny base image
+  name: "shiny-base-image"
+  namespace: shiny-build
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    description: Build config for shiny base image
+  name: "shiny-base-image"
+  namespace: shiny-build
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "shiny-base-image:latest"
+  source:
+    git:
+      uri: "https://github.com/mamurak/airopen-demo.git"
+      ref: "main"
+    type: Git
+  strategy:
+    dockerStrategy:
+      dockerfilePath: "container-images/shiny-base/Containerfile"
+  triggers:
+  - type: "ConfigChange"
