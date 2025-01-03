@@ -1,0 +1,30 @@
+schemaVersion: 2.2.0
+metadata:
+  name: shiny-workspace
+attributes:
+  controller.devfile.io/storage-type: ephemeral
+projects:
+  - name: devdemos
+    git:
+      remotes:
+        origin: 'https://github.com/mamurak/airopen-demo.git'
+      checkoutFrom:
+        revision: main
+components:
+- name: udi
+  container:
+    image: quay.io/devfile/universal-developer-image:ubi8-latest
+    memoryLimit: 4Gi
+    memoryRequest: 2Gi
+    cpuLimit: 4000m
+    cpuRequest: 1000m
+    mountSources: true
+    sourceMapping: /projects
+commands:
+  - id: installdependencies
+    exec:
+      component: udi
+      commandLine: "pip install psycopg2-binary"
+events:
+  postStart:
+    - installdependencies
