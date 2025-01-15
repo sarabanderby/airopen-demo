@@ -11,7 +11,7 @@ RUN dnf update -y && \
     dnf install -y flexiblas-* \
         https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/openblas-openmp64-0.3.21-2.el9.x86_64.rpm \
         https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/flexiblas-openblas-openmp64-3.0.4-8.el9.x86_64.rpm \
-        https://rpmfind.net/linux/centos-stream/9-stream/BaseOS/x86_64/os/Packages/pkgconf-pkg-config-1.7.3-10.el9.x86_64.rpm \
+        pkgconf-pkg-config.x86_64 \
         https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/flexiblas-3.0.4-8.el9.x86_64.rpm \
         libtirpc.x86_64 \
         https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/perl-libs-5.32.1-480.el9.x86_64.rpm \
